@@ -1,11 +1,9 @@
 <template>
-    <div class="">
-        <Navbar v-if="!isAuthPage" />
-        <main :class="mainClasses">
-            <router-view />
-        </main>
-        <ContactSection v-if="!isAuthPage" />
-    </div>
+    <router-view v-slot="{ Component, route }">
+        <div :key="route.name">
+            <Component :is="Component" />
+        </div>
+    </router-view>
 </template>
 
 <script setup>

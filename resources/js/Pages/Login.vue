@@ -1,77 +1,61 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-      <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Masuk ke MyApp</h2>
-      
-      <form @submit.prevent="login">
-        <div class="mb-4">
-          <label class="block text-gray-700 font-semibold mb-2">Email</label>
-          <input
-            type="email"
-            v-model="email"
-            placeholder="Masukkan email kamu"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    <div class="min-h-screen flex">
+        <!-- Left Side -->
+        <div class="hidden lg:flex w-1/2 bg-gradient-to-br from-yellow-400 to-yellow-600 text-white items-center justify-center">
+            <div class="text-center flex items-center justify-center px-10">
+                <div>
+                    <div class="mt-8">
+                        <h1 class="text-5xl font-extrabold mb-4 drop-shadow-lg">Selamat Datang</h1>
+                        <p class="text-lg opacity-90">Mahasiswa Baru Teknik Informatika</p>
+                        
+                    </div>
+                    <div class="flex items-center justify-center space-x-6 bg-white rounded-full px-8 py-4 mx-auto w-fit shadow-md">
+                        <img :src="logo" alt="Logo" class="h-15" />
+                    </div>
+
+                </div>
+            </div>
         </div>
 
-        <div class="mb-6">
-          <label class="block text-gray-700 font-semibold mb-2">Password</label>
-          <input
-            type="password"
-            v-model="password"
-            placeholder="Masukkan password"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <!-- Right Side (Login Form) -->
+        <div class="flex-1 flex items-center justify-center bg-gray-50">
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+                <div class="flex justify-center">
+                    <img :src="logoGamatifUrl" class="h-15" alt="Logo GAMATIF" />
+                </div>
+
+                <div v-if="error" class="mb-4 p-3 bg-red-100 text-red-700 text-sm rounded-md">
+                    {{ error }}
+                </div>
+
+                <form @submit.prevent="handleLogin" class="space-y-5">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input v-model="email" type="email" id="email" required placeholder="contoh@gmail.com"
+                            class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 focus:ring-2 focus:ring-yellow-400" />
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input v-model="password" type="password" id="password" required placeholder="••••••••"
+                            class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-700 focus:ring-2 focus:ring-yellow-400" />
+                    </div>
+
+                    <button type="submit" :disabled="isLoading"
+                        class="w-full py-3 px-4 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow-md transition disabled:opacity-50">
+                        {{ isLoading ? "Memproses..." : "Login" }}
+                    </button>
+                </form>
+
+                <p class="mt-6 text-center text-sm text-gray-500">
+                    Belum punya akun?
+                    <a href="/registrasi-maba" class="text-yellow-600 hover:underline font-medium">Registrasi</a>
+                </p>
+            </div>
         </div>
-
-        <button
-          type="submit"
-          class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
-        >
-          Masuk
-        </button>
-      </form>
-
-      <p class="text-center text-gray-600 mt-6">
-        Belum punya akun?
-        <router-link to="/register" class="text-blue-600 hover:underline font-semibold">
-          Daftar sekarang
-        </router-link>
-      </p>
     </div>
-  </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-    };
-  },
-  methods: {
-    login() {
-      alert(`Login dengan email: ${this.email}`);
-      // nanti ganti dengan request ke backend
-    },
-  },
-};
+<script setup>
+import logo from '@/assets/logo.png';
 </script>
-
-<style scoped>
-/* Animasi ringan */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-div {
-  animation: fadeIn 0.6s ease-in-out;
-}
-</style>
