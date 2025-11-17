@@ -55,33 +55,35 @@ export const useAuthStore = defineStore("auth", () => {
     };
 
     // ---------------- LOGIN ----------------
-    const login = async (credentials) => {
-        isLoading.value = true;
-        errors.value = {};
+const login = async (credentials) => {
+    isLoading.value = true;
+    errors.value = {};
 
-        try {
-            const response = await api.post("/login", credentials);
+    try {
+        const response = await api.post("/login", credentials);
 
-            token.value = response.data.token;
-            user.value = response.data.user;
+        token.value = response.data.token;
+        user.value = response.data.user;
 
-            localStorage.setItem("authToken", token.value);
-            setAxiosHeader();
+        localStorage.setItem("authToken", token.value);
+        setAxiosHeader();
 
-            return true;
+        return true;
 
-        } catch (error) {
-            if (error.response?.status === 422) {
-                errors.value = error.response.data.errors;
-            } else {
-                errors.value = { general: ["Login gagal."] };
-            }
-            return false;
-
-        } finally {
-            isLoading.value = false;
+    } catch (error) {
+        if (error.response?.status === 401) {
+            errors.value = { general: ["Email atau password salah"] };
+        } else if (error.response?.status === 422) {
+            errors.value = error.response.data.errors;
+        } else {
+            errors.value = { general: ["Terjadi kesalahan server"] };
         }
-    };
+        return false;
+
+    } finally {
+        isLoading.value = false;
+    }
+};
 
     // ---------------- LOGOUT ----------------
     const logout = () => {
@@ -105,4 +107,5 @@ export const useAuthStore = defineStore("auth", () => {
         login,
         logout,
     };
+
 });

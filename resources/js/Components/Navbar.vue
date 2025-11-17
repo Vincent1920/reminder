@@ -1,88 +1,114 @@
 <template>
-    <nav class="w-full bg-yellow-100 shadow flex items-center justify-between px-6 py-4">
+    <nav class="bg-yellow-50 shadow px-6 py-4 flex items-center justify-between">
+        <!-- LEFT -->
+        <router-link to="/" class="text-xl font-bold text-gray-800">
+            Remember<span class="text-yellow-600">ME</span>
+        </router-link>
 
-        <!-- Logo -->
-        <div class="flex items-center space-x-3">
-            <h1 class="font-bold text-gray-800 text-xl font-[cursive]">RememberME</h1>
-        </div>
-
-        <!-- Desktop Menu -->
-        <div class="hidden md:flex space-x-8 text-gray-800">
+        <!-- DESKTOP MENU -->
+        <div class="hidden md:flex items-center space-x-6">
             <router-link to="/" class="hover:text-black">Home</router-link>
             <router-link to="/tugas" class="hover:text-black">Tugas</router-link>
             <router-link to="/history" class="hover:text-black">History</router-link>
-        </div>
 
-        <!-- User Dropdown (desktop) -->
-        <div class="hidden md:block relative">
-            <button @click="toggleDropdown" class="flex items-center space-x-2">
-                <i class="fa-regular fa-user text-lg"></i>
-                <i class="fa-solid fa-chevron-down text-xs"></i>
-            </button>
+            <!-- Jika belum login -->
+            <router-link
+                v-if="!isAuthenticated"
+                to="/login"
+                class="py-1 px-4 bg-gray-900 text-white rounded hover:bg-black"
+            >
+                Login
+            </router-link>
 
-            <div v-if="dropdownOpen" class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg p-3 border">
-                <p class="font-semibold text-gray-700"> userName </p>
-                <!-- <p class="font-semibold text-gray-700">{{ userName }}</p> -->
-
-                <!-- <p class="text-sm text-gray-500">{{ userEmail }}</p> -->
-                <hr class="my-2">
-                <button class="text-left w-full text-red-600 hover:text-red-700" @click="logout">
-                    Logout
+            <!-- Jika sudah login -->
+            <div v-else class="relative">
+                <button @click="toggleDropdown" class="flex items-center space-x-2">
+                    <span class="font-semibold text-gray-700">{{ user?.name }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                         stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M19 9l-7 7-7-7" />
+                    </svg>
                 </button>
+
+                <!-- DROPDOWN -->
+                <div
+                    v-if="dropdownOpen"
+                    class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded p-3 z-50"
+                >
+                    <p class="text-sm text-gray-700">{{ user?.email }}</p>
+                    <hr class="my-2" />
+                    <button @click="logout"
+                        class="w-full text-left text-red-600 hover:text-red-700">
+                        Logout
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Mobile Button -->
-        <button @click="toggleMenu" class="md:hidden text-2xl text-gray-800">
-            <i class="fa-solid fa-bars"></i>
+        <!-- MOBILE BURGER BUTTON -->
+        <button @click="toggleMenu" class="md:hidden text-gray-700">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
         </button>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div v-if="menuOpen" class="md:hidden bg-yellow-50 w-full px-6 py-4 space-y-4 text-gray-800 shadow">
+    <!-- MOBILE MENU -->
+    <div
+        v-if="menuOpen"
+        class="md:hidden bg-yellow-50 w-full px-6 py-4 space-y-4 text-gray-800 shadow"
+    >
         <router-link to="/" class="block hover:text-black">Home</router-link>
         <router-link to="/tugas" class="block hover:text-black">Tugas</router-link>
         <router-link to="/history" class="block hover:text-black">History</router-link>
 
-        <!-- User info mobile -->
-        <div class="mt-4 p-3 bg-white rounded shadow">
-            <p class="font-semibold text-gray-700">{{ userName }}</p>
-            <p class="text-sm text-gray-500">{{ userEmail }}</p>
+        <!-- Jika belum login -->
+        <router-link
+            v-if="!isAuthenticated"
+            to="/login"
+            class="block text-center py-2 bg-gray-900 text-white rounded hover:bg-black"
+        >
+            Login
+        </router-link>
 
-            <button class="mt-3 text-red-600 hover:text-red-700" @click="logout">
+        <!-- Jika sudah login -->
+        <div v-else class="mt-4 p-3 bg-white rounded shadow">
+            <p class="font-semibold text-gray-700">{{ user?.name }}</p>
+            <p class="text-sm text-gray-500">{{ user?.email }}</p>
+
+            <button @click="logout" class="mt-3 text-red-600 hover:text-red-700">
                 Logout
             </button>
         </div>
     </div>
 </template>
 
+
 <script setup>
-    import {
-        ref
-    } from "vue";
+import { ref } from "vue";
+import { useAuthStore } from "@/Stores/authStore";
+import { storeToRefs } from "pinia";
 
-    // Toggle states
-    const menuOpen = ref(false);
-    const dropdownOpen = ref(false);
+const menuOpen = ref(false);
+const dropdownOpen = ref(false);
 
-    // Dummy user (nanti diganti dari token authStore)
-    const userName = "Nama Pengguna";
-    const userEmail = "email@example.com";
+const auth = useAuthStore();
+const { user, isAuthenticated } = storeToRefs(auth);
 
-    const toggleMenu = () => {
-        menuOpen.value = !menuOpen.value;
-    };
+const toggleMenu = () => {
+    menuOpen.value = !menuOpen.value;
+};
 
-    const toggleDropdown = () => {
-        dropdownOpen.value = !dropdownOpen.value;
-    };
+const toggleDropdown = () => {
+    dropdownOpen.value = !dropdownOpen.value;
+};
 
-    const logout = () => {
-        alert("Logout clicked!");
-        // tambahkan fungsi logout authStore disini
-    };
+const logout = () => {
+    auth.logout();
+    menuOpen.value = false;
+    dropdownOpen.value = false;
+};
 </script>
-
-<style>
-    /* Optional smooth dropdown animation */
-</style>

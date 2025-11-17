@@ -41,6 +41,7 @@
 import { useAuthStore } from "@/Stores/authStore";
 import Navbar from "@/Components/Navbar.vue";
 import { ref } from "vue";
+import router from "../Router";
 
 const auth = useAuthStore(); // <-- PENTING!!!
 
@@ -64,6 +65,7 @@ const register = async () => {
 
     if (success) {
         alert("Register berhasil!");
+        router.push("/login")
     } else {
         console.log("Error:", auth.errors);
         alert("Register gagal");

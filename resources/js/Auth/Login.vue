@@ -5,15 +5,7 @@
 
             <!-- LEFT IMAGE AREA -->
             <div class="bg-[#7EC4E3] flex flex-col items-center justify-center p-10 relative">
-
                 <h1 class="text-4xl font-bold text-white mb-4">Halo!</h1>
-
-                <!-- <img
-          src="/images/logo.png"
-          alt="Cat Mascot"
-          class="h-72 drop-shadow-xl"
-        /> -->
-
             </div>
 
             <!-- RIGHT LOGIN FORM -->
@@ -28,14 +20,24 @@
 
                 <form @submit.prevent="handleLogin" class="space-y-4">
 
-                    <input v-model="email" type="email" placeholder="email"
-                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-yellow-400" />
+                    <input
+                        v-model="email"
+                        type="email"
+                        placeholder="Email"
+                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-yellow-400"
+                    />
 
-                    <input v-model="password" type="password" placeholder="email"
-                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-yellow-400" />
+                    <input
+                        v-model="password"
+                        type="password"
+                        placeholder="Password"
+                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-yellow-400"
+                    />
 
-                    <button type="submit"
-                        class="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-900">
+                    <button
+                        type="submit"
+                        class="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-900"
+                    >
                         Log In
                     </button>
 
@@ -45,12 +47,12 @@
                     <button class="border px-4 py-2 rounded-lg text-sm hover:bg-gray-100">
                         Forgot Password?
                     </button>
-                
-                    <a href="registrasi">
+
+                    <router-link to="/registrasi">
                         <button class="bg-black text-white px-6 py-2 rounded-lg text-sm hover:bg-gray-900">
                             Register
                         </button>
-                    </a>
+                    </router-link>
                 </div>
 
             </div>
@@ -59,18 +61,29 @@
 </template>
 
 <script setup>
-    // import Navbar from "@/Components/Navbar.vue";
-    import logo from '@/assets/logo.png';
+import Navbar from "@/Components/Navbar.vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/Stores/authStore";
 
-    import Navbar from "@/Components/Navbar.vue";
-    import {
-        ref
-    } from "vue"; // ⬅️ WAJIB ADA
+const email = ref("");
+const password = ref("");
 
-    const email = ref("");
-    const password = ref("");
+const router = useRouter();
+const auth = useAuthStore();
 
-    const handleLogin = () => {
-        alert("Login clicked!");
-    };
+const handleLogin = async () => {
+    const success = await auth.login({
+        email: email.value,
+        password: password.value,
+    });
+
+    if (success) {
+        alert("Login berhasil!");
+        router.push("/"); // arahkan ke home/dashboard
+    } else {
+        alert("Login gagal. Periksa email & password.");
+        console.log("Login Error:", auth.errors);
+    }
+};
 </script>
