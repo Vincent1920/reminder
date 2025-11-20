@@ -20,33 +20,55 @@
                                 d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
                         </svg>
                         <svg :class="{'rotate-180': dropdownOpen}" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transition-transform">
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                            class="w-4 h-4 transition-transform">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                         </svg>
                     </div>
                 </button>
 
                 <div v-if="dropdownOpen" class="absolute right-0 mt-5 min-w-[170px] z-50">
-                    <div class=" dropdown-box rounded-lg shadow border  p-2 text-gray-800">
+                    <div class="bg-white dropdown-box rounded-lg shadow border p-2 text-gray-800">
 
                         <router-link v-if="!isAuthenticated" to="/login"
                             class="block px-4 py-2 text-center bg-gray-900 text-white rounded hover:bg-black text-sm">
                             Login
                         </router-link>
 
-                        <div v-else class="space-y-1">
-                            <p class="font-normal text-sm p-2">
-                                <span class="text-xs text-gray-500 block leading-none">Nama</span>
-                                <span class="font-semibold block leading-none">{{ name }}</span>
-                            </p>
-                            <p class="font-normal text-sm p-2">
-                                <span class="text-xs text-gray-500 block leading-none">Email</span>
-                                <span class="font-semibold block leading-none">{{ email }}</span>
-                            </p>
-                            <button @click="logout"
-                                class="w-full text-left pt-2 px-2 text-base text-red-600 font-medium hover:text-red-700 border-t border-black-200 mt-2">
-                                Logout
-                            </button>
+                        <div v-else class="py-1 min-w-[200px]">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Akun</p>
+                                <p class="text-sm font-bold text-gray-900 truncate">{{ name }}</p>
+                                <p class="text-xs text-gray-500 truncate mt-0.5">{{ email }}</p>
+                            </div>
+
+                            <div class="py-1">
+                                <router-link to="/profil"
+                                    class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75H4.5v-.75z" />
+                                    </svg>
+
+                                    <span>Profil Saya</span>
+                                </router-link>
+                            </div>
+
+                            <div class="border-t border-gray-100 pt-1">
+                                <button @click="logout"
+                                    class="w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                                    </svg>
+
+                                    <span class="font-medium">Logout</span>
+                                </button>
+                            </div>
                         </div>
 
                     </div>
