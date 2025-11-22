@@ -46,4 +46,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Tambahkan di dalam class User
+public function kategori()
+{
+    // Parameter ke-2 'id_user' wajib ditulis karena kamu tidak pakai default 'user_id'
+    return $this->hasMany(kategori::class, 'id_user');
+}
+
+public function tugas()
+{
+    // Parameter ke-2 'id_user' wajib ditulis karena kamu tidak pakai default 'user_id'
+    return $this->hasMany(tugas::class, 'id_tugas');
+}
 }
