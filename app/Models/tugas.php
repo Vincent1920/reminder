@@ -5,28 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class tugas extends Model
+class Tugas extends Model
 {
     use HasFactory;
-    
+
+    // Nama tabel di database
     protected $table = 'tugas';
 
+    // Field yang boleh diisi
     protected $fillable = [
         'id_user',
         'id_kategori',
-        'nama',
         'tanggal',
         'prioritas',
-        'status'
+        'tugas',
     ];
-
-    // Relasi ke Kategori
-    public function kategori() {
-        return $this->belongsTo(Kategori::class, 'id_kategori');
-    }
-
-    // Relasi ke User
-    public function user() {
-        return $this->belongsTo(User::class, 'id_user');
-    }
 }

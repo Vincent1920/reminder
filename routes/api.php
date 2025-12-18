@@ -7,9 +7,12 @@ use App\Http\Controllers\TugasController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+// Route::middleware('auth:sanctum')->post('/Create_Tugas', [TugasController::class, 'CreateTugas']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/Create_Tugas',[TugasController::class,'CreateTugas']);
+    Route::post('/Create_Tugas', [TugasController::class, 'CreateTugas']);
     Route::post('/kategori',[KategoriController::class,'store']);
-    Route::get('/kategori', [KategoriController::class, 'index']);
+    // Route::post('/Create_Tugas',[TugasController::class,'CreateTugas']);
+    Route::get('/get-kategori', [KategoriController::class, 'getKategori']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });

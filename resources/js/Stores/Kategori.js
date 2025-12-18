@@ -13,27 +13,27 @@ export const useKategoriStore = defineStore("kategori", () => {
 
     // ---------------- ACTIONS ----------------
 
-    // 1. GET ALL (Ambil semua kategori)
-    const fetchKategori = async () => {
-        isLoading.value = true;
-        try {
-            const response = await api.get("/kategori");
-            
-            // Sesuaikan dengan struktur JSON response dari Laravel kamu
-            // Misal: { success: true, data: [...] }
-            if(response.data.success) {
-                kategoriList.value = response.data.data;
-            } else {
-                kategoriList.value = response.data; // Fallback jika struktur beda
-            }
-            
-        } catch (error) {
-            console.error("Gagal mengambil data kategori:", error);
-        } finally {
-            isLoading.value = false;
-        }
-    };
 
+    
+    // 1. GET ALL (Ambil semua kategori)
+const fetchKategori = async () => {
+    isLoading.value = true;
+    try {
+        const response = await api.get("/get-kategori");
+        
+        // Perhatikan ini: response.data (dari axios) .data (dari JSON Laravel)
+        if (response.data && response.data.success) {
+            kategoriList.value = response.data.data; 
+        } else {
+            // Fallback jika Laravel kirim array langsung
+            kategoriList.value = response.data;
+        }
+    } catch (error) {
+        console.error("Gagal mengambil kategori:", error);
+    } finally {
+        isLoading.value = false;
+    }
+};
     // 2. CREATE (Tambah kategori baru)
     const createKategori = async (formData) => {
         isLoading.value = true;

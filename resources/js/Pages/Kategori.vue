@@ -1,86 +1,79 @@
 <template>
-
-<Navbar/>
+  <Navbar/>
   <div class="container mx-auto px-4 py-8 md:py-12">
     <div class="flex flex-col items-center justify-center mb-10">
-      
       <h1 class="font-kaushan text-4xl text-gray-800 mb-8">Kategori</h1>
 
-      <button
+      <router-link to="/Create_kategori" 
         class="flex items-center gap-3 px-6 py-3 bg-pink-100 text-pink-700 rounded-full shadow-md hover:bg-pink-200 transition-colors duration-200 text-xl font-kaushan mb-10"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <router-link to="/Create_kategori" class="hover:text-black">
-                    <!-- Buat Tugas -->
-                    <span>Buat Kategori</span>
-                </router-link>
-      </button>
+        <span>Buat Kategori</span>
+      </router-link>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-if="isLoading" class="text-center font-poppins text-xl text-gray-500">
+        Memuat kategori...
+    </div>
+
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
-        v-for="(category, index) in categories"
-        :key="index"
+        v-for="(category, index) in kategoriList"
+        :key="category.id"
         :class="[
-          category.bgColor,
-          'relative w-full h-48 rounded-3xl shadow-xl flex items-center justify-center',
-          'transform transition-transform hover:scale-105 duration-300 cursor-pointer group',
-          {'bg-opacity-70': category.bgColor === 'bg-pink-100' || category.bgColor === 'bg-green-100' || category.bgColor === 'bg-blue-200'}
+          getColor(index).bg,
+          'relative w-full h-48 rounded-[40px] shadow-lg flex items-center justify-center p-6',
+          'transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer group'
         ]"
       >
         <h2
           :class="[
-            category.bgColor === 'bg-pink-100' ? 'text-pink-800' : 
-            category.bgColor === 'bg-green-100' ? 'text-green-800' : 
-            category.bgColor === 'bg-blue-200' ? 'text-indigo-800' : 'text-black',
-            'font-poppins text-4xl select-none'
+            getColor(index).text,
+            'font-poppins text-3xl font-semibold select-none text-center break-words'
           ]"
         >
-          {{ category.name }}
+          {{ category.nama_kategori }}
         </h2>
+      </div>
+      
+      <div v-if="kategoriList.length === 0" class="col-span-full text-center text-gray-400 font-poppins mt-10">
+        <p class="text-2xl">Belum ada kategori.</p>
+        <p>Klik tombol "Buat Kategori" untuk memulai.</p>
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
-import { ref } from 'vue';
+import { onMounted } from 'vue';
 import Navbar from '../Components/Navbar.vue';
+import { useKategoriStore } from '@/stores/Kategori';
+import { storeToRefs } from 'pinia';
 
-const categories = ref([
-  {
-    name: 'nama kategori',
-    bgColor: 'bg-green-100', // Hijau muda
-  },
-  {
-    name: 'Kategori',
-    bgColor: 'bg-pink-100', // Pink muda
-  },
-  {
-    name: 'Kerjaan',
-    bgColor: 'bg-blue-200', // Biru keunguan / Lavender
-  },
-]);
+const kategoriStore = useKategoriStore();
+const { kategoriList, isLoading } = storeToRefs(kategoriStore);
+
+// Daftar palet warna pastel yang lebih banyak
+const colorPalette = [
+  { bg: 'bg-green-100', text: 'text-green-800' },
+  { bg: 'bg-pink-100', text: 'text-pink-800' },
+  { bg: 'bg-blue-200', text: 'text-blue-800' },
+  { bg: 'bg-yellow-100', text: 'text-yellow-800' },
+  { bg: 'bg-purple-100', text: 'text-purple-800' },
+  { bg: 'bg-orange-100', text: 'text-orange-800' },
+  { bg: 'bg-teal-100', text: 'text-teal-800' },
+  { bg: 'bg-red-100', text: 'text-red-800' },
+];
+
+// Fungsi untuk mengambil warna berdasarkan index
+const getColor = (index) => {
+  return colorPalette[index % colorPalette.length];
+};
+
+onMounted(() => {
+  kategoriStore.fetchKategori();
+});
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Dancing+Script:wght@600;700&family=Kaushan+Script&display=swap');
-
-d
-.font-poppins {
-  font-family: 'Poppins', sans-serif;
-}
-</style>

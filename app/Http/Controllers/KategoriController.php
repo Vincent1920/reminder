@@ -3,14 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\kategori;
+use App\Models\Kategori;
 use Illuminate\Support\Facades\Validator;
 // use App\Models\Kategori;
 class KategoriController extends Controller
 {
 
 
+// TugasController.php atau KategoriController.php
+public function getKategori(Request $request)
+{
+    // Mengambil kategori milik user yang sedang login
+    $kategori = \App\Models\Kategori::where('id_user', $request->user()->id)->get();
 
+    return response()->json([
+        'success' => true,
+        'data'    => $kategori
+    ], 200);
+}
     /**
      * Menampilkan semua data kategori
      */
