@@ -1,8 +1,10 @@
 <template>
   <router-view v-slot="{ Component, route }">
-    <div :key="route.name">
-      <Component :is="Component" />
-    </div>
+    <transition name="fade" mode="out-in">
+      <div :key="route.path">
+        <component :is="Component" />
+      </div>
+    </transition>
   </router-view>
 </template>
 
@@ -27,4 +29,17 @@ watch(
 function capitalize(text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
+
+
 </script>
+<style>
+/* Animasi pindah halaman */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

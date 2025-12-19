@@ -207,48 +207,35 @@
         }
     };
     const filteredTasks = computed(() => {
-        // 1. Pastikan data ada
-        let list = Array.isArray(tugasList.value) ? [...tugasList.value] : [];
+    // 1. Pastikan data adalah array
+    let list = Array.isArray(tugasList.value) ? [...tugasList.value] : [];
 
-        // 2. Ambil waktu hari ini (Jam 00:00:00)
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+    // --- PERBAIKAN LOGIKA DISINI ---
+    // Jangan tampilkan tugas yang SUDAH diceklis (is_done === true)
+    // Halaman ini hanya untuk tugas yang BELUM selesai.
+    list = list.filter(t => !t.is_done); 
+    // -------------------------------
 
-        // 3. Jalankan Filter Sembunyikan
-        list = list.filter(t => {
-            const taskDate = new Date(t.tanggal);
-            taskDate.setHours(0, 0, 0, 0);
+    // Filter Kategori (Logika lama Anda)
+    if (selectedCategories.value.length > 0) {
+        list = list.filter(t => selectedCategories.value.includes(t.id_kategori));
+    }
+    
+    // Filter Rentang Tanggal (Logika lama Anda)
+    if (filterDate.value.start) {
+        list = list.filter(t => t.tanggal >= filterDate.value.start);
+    }
+    if (filterDate.value.end) {
+        list = list.filter(t => t.tanggal <= filterDate.value.end);
+    }
 
-            const isExpired = taskDate < today;
-            const isDone = Boolean(t.is_done); // Pastikan terbaca sebagai true/false
-
-            // LOGIKA: Jangan tampilkan jika (Sudah Lewat DAN Sudah Diceklis)
-            // Jika tugas hari ini dan sudah diceklis, tetap tampil (biar user tahu sudah beres)
-            // Jika tugas kemarin dan sudah diceklis, baru hilang.
-            if (isExpired && isDone) {
-                return false;
-            }
-            return true;
-        });
-
-        // 4. Filter Kategori & Tanggal User (Opsional jika user pakai filter dropdown)
-        if (selectedCategories.value.length > 0) {
-            list = list.filter(t => selectedCategories.value.includes(t.id_kategori));
-        }
-        if (filterDate.value.start) {
-            list = list.filter(t => t.tanggal >= filterDate.value.start);
-        }
-        if (filterDate.value.end) {
-            list = list.filter(t => t.tanggal <= filterDate.value.end);
-        }
-
-        // 5. Urutkan: Prioritas 'ya' paling atas
-        return list.sort((a, b) => {
-            if (a.prioritas === 'ya' && b.prioritas !== 'ya') return -1;
-            if (a.prioritas !== 'ya' && b.prioritas === 'ya') return 1;
-            return new Date(b.tanggal) - new Date(a.tanggal);
-        });
+    // Urutkan: Prioritas 'ya' di atas, lalu tanggal terbaru
+    return list.sort((a, b) => {
+        if (a.prioritas === 'ya' && b.prioritas !== 'ya') return -1;
+        if (a.prioritas !== 'ya' && b.prioritas === 'ya') return 1;
+        return new Date(b.tanggal) - new Date(a.tanggal);
     });
+});
 </script>
 
 <style scoped>
