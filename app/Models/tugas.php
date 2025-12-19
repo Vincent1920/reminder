@@ -19,6 +19,7 @@ class Tugas extends Model
         'tanggal',
         'prioritas',
         'tugas',
+        'is_done',
     ];
 
     // app/Models/Tugas.php

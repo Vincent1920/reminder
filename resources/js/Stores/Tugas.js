@@ -54,14 +54,19 @@ export const useTugasStore = defineStore("tugas", () => {
     };
 
     // 3. Update status checklist (Optional - untuk toggleCheck)
-    const updateStatus = async (id, status) => {
-        try {
-            // Asumsi kamu punya API untuk update status (misal patch atau put)
-            await api.patch(`/update-status-tugas/${id}`, { isChecked: status });
-        } catch (error) {
-            console.error("Gagal memperbarui status tugas:", error);
-        }
-    };
+  // Tugas.js
+   const updateStatus = async (id, status) => {
+    try {
+        // Kirim status is_done (1 atau 0) ke Laravel
+        const response = await api.patch(`/update-status-tugas/${id}`, { 
+            is_done: status ? 1 : 0 
+        });
+        return response.data.success;
+    } catch (error) {
+        console.error("Gagal memperbarui status tugas:", error);
+        return false;
+    }
+};
 
     return {
         // State

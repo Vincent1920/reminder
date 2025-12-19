@@ -29,7 +29,18 @@ class TugasController extends Controller
             ], 500);
         }
     }
-    
+    // TugasController.php
+        public function updateStatus(Request $request, $id)
+        {
+            $tugas = Tugas::findOrFail($id);
+            
+            // Update kolom is_done sesuai migrasi
+            $tugas->is_done = $request->is_done; 
+            $tugas->save();
+
+            return response()->json(['success' => true]);
+        }
+
     public function CreateTugas(Request $request)
     {
         // 1. Manual Validation agar detail error bisa dikustomisasi

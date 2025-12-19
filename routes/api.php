@@ -10,9 +10,12 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 // Route::middleware('auth:sanctum')->post('/Create_Tugas', [TugasController::class, 'CreateTugas']);
 Route::middleware('auth:sanctum')->group(function () {
+    // tugas
     Route::post('/Create_Tugas', [TugasController::class, 'CreateTugas']);
     Route::get('/get-Tugas', [TugasController::class, 'getTugas']);
-
+    Route::patch('/update-status-tugas/{id}', [TugasController::class, 'updateStatus']);
+    
+    // kategori
     Route::post('/kategori',[KategoriController::class,'store']);
     // Route::post('/Create_Tugas',[TugasController::class,'CreateTugas']);
     Route::get('/get-kategori', [KategoriController::class, 'getKategori']);

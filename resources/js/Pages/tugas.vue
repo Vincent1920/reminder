@@ -5,7 +5,7 @@
             <h1 class="font-kaushan text-4xl text-gray-800 mb-8">Tugas Saya</h1>
 
             <div class="flex items-center space-x-4">
-                <router-link to="/Create_Tugas" 
+                <router-link to="/Create_Tugas"
                     class="flex items-center gap-3 px-6 py-3 bg-pink-100 text-pink-700 rounded-full shadow-md hover:bg-pink-200 transition-all text-xl font-kaushan">
                     <PlusCircleIcon class="w-7 h-7 text-pink-700" />
                     <span>Buat Tugas</span>
@@ -22,20 +22,26 @@
                         <div class="mb-5">
                             <label class="block text-sm font-bold text-gray-700 mb-3">Rentang Tanggal</label>
                             <div class="flex items-center gap-2">
-                                <input type="date" v-model="filterDate.start" class="w-full p-2 text-xs border border-gray-200 rounded-lg" />
+                                <input type="date" v-model="filterDate.start"
+                                    class="w-full p-2 text-xs border border-gray-200 rounded-lg" />
                                 <span class="text-gray-400">&</span>
-                                <input type="date" v-model="filterDate.end" class="w-full p-2 text-xs border border-gray-200 rounded-lg" />
+                                <input type="date" v-model="filterDate.end"
+                                    class="w-full p-2 text-xs border border-gray-200 rounded-lg" />
                             </div>
-                            <button v-if="filterDate.start || filterDate.end" @click="resetDateFilter" class="text-[10px] text-red-500 mt-2 hover:underline">Hapus Filter Tanggal</button>
+                            <button v-if="filterDate.start || filterDate.end" @click="resetDateFilter"
+                                class="text-[10px] text-red-500 mt-2 hover:underline">Hapus Filter Tanggal</button>
                         </div>
 
                         <hr class="mb-4 border-gray-100" />
 
                         <label class="block text-sm font-bold text-gray-700 mb-3">Filter Kategori</label>
                         <div class="space-y-2 max-h-40 overflow-y-auto">
-                            <label v-for="cat in kategoriList" :key="cat.id" class="flex items-center cursor-pointer group">
-                                <input type="checkbox" :value="cat.id" v-model="selectedCategories" class="form-checkbox h-4 w-4 text-purple-600 rounded border-gray-300" />
-                                <span class="ml-3 text-sm text-gray-600 group-hover:text-purple-700">{{ cat.nama_kategori }}</span>
+                            <label v-for="cat in kategoriList" :key="cat.id"
+                                class="flex items-center cursor-pointer group">
+                                <input type="checkbox" :value="cat.id" v-model="selectedCategories"
+                                    class="form-checkbox h-4 w-4 text-purple-600 rounded border-gray-300" />
+                                <span
+                                    class="ml-3 text-sm text-gray-600 group-hover:text-purple-700">{{ cat.nama_kategori }}</span>
                             </label>
                         </div>
                     </div>
@@ -44,32 +50,43 @@
         </div>
 
         <div v-if="isLoading" class="text-center font-poppins text-gray-500">Memuat tugas...</div>
-        
+
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div v-for="(task, index) in filteredTasks" :key="task.id" 
-                :class="[
-                    getColor(index).bg,
-                    'relative w-full h-64 rounded-[40px] shadow-lg overflow-hidden transform transition-all hover:scale-105 duration-300'
-                ]">
+            <div v-for="(task, index) in filteredTasks" :key="task.id" :class="[
+            getColor(index).bg,
+            'relative w-full h-64 rounded-[40px] shadow-lg overflow-hidden transform transition-all hover:scale-105 duration-300'
+        ]">
 
                 <div class="absolute top-0 left-0 z-10">
                     <div class="backdrop-blur-sm px-5 py-3 rounded-br-[30px] flex items-center gap-3 shadow-sm"
                         :style="task.prioritas === 'ya' ? 'background-color: #FFDF5E' : 'background-color: rgba(255, 255, 255, 0.9)'">
-                        <CalendarDaysIcon class="w-5 h-5" :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-600'" />
-                        <span class="font-bold font-sans text-xs" :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-700'">{{ task.tanggal }}</span>
+                        <CalendarDaysIcon class="w-5 h-5"
+                            :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-600'" />
+                        <span class="font-bold font-sans text-xs"
+                            :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-700'">
+                            {{ task.tanggal }}
+                        </span>
                     </div>
                 </div>
 
                 <div class="absolute top-5 right-6 z-20">
-                    <div @click="toggleCheck(task)"
-                        class="w-8 h-8 bg-white border-2 border-gray-800 rounded-xl cursor-pointer flex items-center justify-center transition-transform active:scale-90">
-                        <CheckIcon v-if="task.isChecked" class="w-6 h-6 text-green-600" stroke-width="4" />
+                    <div class="cursor-pointer" @click="toggleCheck(task)">
+                        <CheckIcon v-if="task.is_done" class="w-10 h-10 text-blue-600 font-bold" />
+                        <XMarkIcon v-else-if="new Date(task.tanggal).setHours(0,0,0,0) < new Date().setHours(0,0,0,0)"
+                            class="w-10 h-10 text-red-600 font-bold" />
+                        <div v-else
+                            class="w-8 h-8 bg-white border-2 border-gray-800 rounded-xl flex items-center justify-center transition-transform active:scale-90 shadow-sm">
+                        </div>
                     </div>
                 </div>
 
                 <div class="flex flex-col items-center justify-center h-full w-full p-8 transition-all duration-500"
-                    :class="{ 'opacity-30 grayscale blur-[1px]': task.isChecked }">
-                    <h2 :class="[getColor(index).text, 'font-kaushan text-4xl text-center leading-tight mb-2']">
+                    :class="{ 'opacity-30 grayscale blur-[1px]': task.is_done }">
+                    <h2 :class="[
+                    getColor(index).text, 
+                    'font-kaushan text-4xl text-center leading-tight mb-2', 
+                    { 'line-through': task.is_done }
+                ]">
                         {{ task.tugas }}
                     </h2>
                     <span :class="[getColor(index).accent, 'font-dancing text-2xl opacity-80']">
@@ -77,8 +94,8 @@
                     </span>
                 </div>
 
-                <div v-if="task.isChecked" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="w-4/5 h-1 bg-gray-800 rotate-[-5deg] rounded-full shadow-sm"></div>
+                <div v-if="task.is_done" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-4/5 h-1 bg-gray-800 rotate-[-5deg] rounded-full shadow-sm opacity-50"></div>
                 </div>
             </div>
         </div>
@@ -90,72 +107,162 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { FunnelIcon, PlusCircleIcon, CalendarDaysIcon, CheckIcon } from '@heroicons/vue/24/solid';
-import Navbar from '../Components/Navbar.vue';
-import { useTugasStore } from '@/stores/Tugas';
-import { useKategoriStore } from '@/stores/Kategori';
-import { storeToRefs } from 'pinia';
+    import {
+        ref,
+        computed,
+        onMounted
+    } from 'vue';
+    import {
+        FunnelIcon,
+        XMarkIcon,
+        PlusCircleIcon,
+        CalendarDaysIcon,
+        CheckIcon
+    } from '@heroicons/vue/24/solid';
+    import Navbar from '../Components/Navbar.vue';
+    import {
+        useTugasStore
+    } from '@/stores/Tugas';
+    import {
+        useKategoriStore
+    } from '@/stores/Kategori';
+    import {
+        storeToRefs
+    } from 'pinia';
 
-const tugasStore = useTugasStore();
-const kategoriStore = useKategoriStore();
+    const tugasStore = useTugasStore();
+    const kategoriStore = useKategoriStore();
 
-const { tugasList, isLoading } = storeToRefs(tugasStore);
-const { kategoriList } = storeToRefs(kategoriStore);
-onMounted(async () => {
-    await tugasStore.fetchTugas();
-    console.log("Data Tugas dari Store:", tugasList.value);
-});
-const filterDropdownOpen = ref(false);
-const selectedCategories = ref([]);
-const filterDate = ref({ start: '', end: '' });
-
-const colorPalette = [
-    { bg: 'bg-green-100', text: 'text-green-800', accent: 'text-green-700' },
-    { bg: 'bg-pink-100', text: 'text-pink-800', accent: 'text-pink-700' },
-    { bg: 'bg-blue-100', text: 'text-blue-800', accent: 'text-blue-700' },
-    { bg: 'bg-yellow-100', text: 'text-yellow-800', accent: 'text-yellow-700' }
-];
-
-const getColor = (index) => colorPalette[index % colorPalette.length];
-
-onMounted(async () => {
-    await tugasStore.fetchTugas();
-    await kategoriStore.fetchKategori();
-});
-
-const toggleFilterDropdown = () => { filterDropdownOpen.value = !filterDropdownOpen.value; };
-const resetDateFilter = () => { filterDate.value = { start: '', end: '' }; };
-
-const toggleCheck = (task) => {
-    task.isChecked = !task.isChecked;
-    // Panggil store jika ingin simpan status ke DB: tugasStore.updateStatus(task.id)
-};
-
-const filteredTasks = computed(() => {
-    let list = Array.isArray(tugasList.value) ? [...tugasList.value] : [];
-
-    if (selectedCategories.value.length > 0) {
-        list = list.filter(t => selectedCategories.value.includes(t.id_kategori));
-    }
-    if (filterDate.value.start) {
-        list = list.filter(t => t.tanggal >= filterDate.value.start);
-    }
-    if (filterDate.value.end) {
-        list = list.filter(t => t.tanggal <= filterDate.value.end);
-    }
-
-    return list.sort((a, b) => {
-        if (a.prioritas === 'ya' && b.prioritas !== 'ya') return -1;
-        if (a.prioritas !== 'ya' && b.prioritas === 'ya') return 1;
-        return new Date(b.tanggal) - new Date(a.tanggal);
+    const {
+        tugasList,
+        isLoading
+    } = storeToRefs(tugasStore);
+    const {
+        kategoriList
+    } = storeToRefs(kategoriStore);
+    onMounted(async () => {
+        await tugasStore.fetchTugas();
+        console.log("Data Tugas dari Store:", tugasList.value);
     });
-});
+    const filterDropdownOpen = ref(false);
+    const selectedCategories = ref([]);
+    const filterDate = ref({
+        start: '',
+        end: ''
+    });
+
+    const colorPalette = [{
+            bg: 'bg-green-100',
+            text: 'text-green-800',
+            accent: 'text-green-700'
+        },
+        {
+            bg: 'bg-pink-100',
+            text: 'text-pink-800',
+            accent: 'text-pink-700'
+        },
+        {
+            bg: 'bg-blue-100',
+            text: 'text-blue-800',
+            accent: 'text-blue-700'
+        },
+        {
+            bg: 'bg-yellow-100',
+            text: 'text-yellow-800',
+            accent: 'text-yellow-700'
+        }
+    ];
+
+    const getColor = (index) => colorPalette[index % colorPalette.length];
+
+    onMounted(async () => {
+        await tugasStore.fetchTugas();
+        await kategoriStore.fetchKategori();
+    });
+
+
+    const toggleFilterDropdown = () => {
+        filterDropdownOpen.value = !filterDropdownOpen.value;
+    };
+    const resetDateFilter = () => {
+        filterDate.value = {
+            start: '',
+            end: ''
+        };
+    };
+
+    // Perbarui fungsi toggleCheck di script setup Anda
+    const toggleCheck = async (task) => {
+        // 1. Ubah status secara lokal untuk kecepatan UI
+        task.is_done = !task.is_done;
+
+        // 2. Kirim perubahan ke database melalui Store
+        // Pastikan Anda sudah membuat fungsi updateStatus di Pinia Store
+        const success = await tugasStore.updateStatus(task.id, task.is_done);
+
+        if (!success) {
+            // Jika gagal di server, kembalikan status ke semula (rollback)
+            task.is_done = !task.is_done;
+            alert("Gagal memperbarui status tugas.");
+        }
+    };
+    const filteredTasks = computed(() => {
+        // 1. Pastikan data ada
+        let list = Array.isArray(tugasList.value) ? [...tugasList.value] : [];
+
+        // 2. Ambil waktu hari ini (Jam 00:00:00)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 3. Jalankan Filter Sembunyikan
+        list = list.filter(t => {
+            const taskDate = new Date(t.tanggal);
+            taskDate.setHours(0, 0, 0, 0);
+
+            const isExpired = taskDate < today;
+            const isDone = Boolean(t.is_done); // Pastikan terbaca sebagai true/false
+
+            // LOGIKA: Jangan tampilkan jika (Sudah Lewat DAN Sudah Diceklis)
+            // Jika tugas hari ini dan sudah diceklis, tetap tampil (biar user tahu sudah beres)
+            // Jika tugas kemarin dan sudah diceklis, baru hilang.
+            if (isExpired && isDone) {
+                return false;
+            }
+            return true;
+        });
+
+        // 4. Filter Kategori & Tanggal User (Opsional jika user pakai filter dropdown)
+        if (selectedCategories.value.length > 0) {
+            list = list.filter(t => selectedCategories.value.includes(t.id_kategori));
+        }
+        if (filterDate.value.start) {
+            list = list.filter(t => t.tanggal >= filterDate.value.start);
+        }
+        if (filterDate.value.end) {
+            list = list.filter(t => t.tanggal <= filterDate.value.end);
+        }
+
+        // 5. Urutkan: Prioritas 'ya' paling atas
+        return list.sort((a, b) => {
+            if (a.prioritas === 'ya' && b.prioritas !== 'ya') return -1;
+            if (a.prioritas !== 'ya' && b.prioritas === 'ya') return 1;
+            return new Date(b.tanggal) - new Date(a.tanggal);
+        });
+    });
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Dancing+Script:wght@600;700&family=Kaushan+Script&display=swap');
-.font-kaushan { font-family: 'Kaushan Script', cursive; }
-.font-dancing { font-family: 'Dancing Script', cursive; }
-.font-poppins { font-family: 'Poppins', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Dancing+Script:wght@600;700&family=Kaushan+Script&display=swap');
+
+    .font-kaushan {
+        font-family: 'Kaushan Script', cursive;
+    }
+
+    .font-dancing {
+        font-family: 'Dancing Script', cursive;
+    }
+
+    .font-poppins {
+        font-family: 'Poppins', sans-serif;
+    }
 </style>
