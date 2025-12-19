@@ -4,6 +4,7 @@ import api from "@/axios"; // Pastikan path axios kamu benar
 
 export const useTugasStore = defineStore("tugas", () => {
     // ---------------- STATE ----------------
+    
     const tugasList = ref([]);      // Menampung semua daftar tugas dari database
     const isLoading = ref(false);   // Loading state untuk spinner/indikator
     const errors = ref({});         // Menampung detail error validasi dari Laravel
@@ -11,7 +12,7 @@ export const useTugasStore = defineStore("tugas", () => {
     // ---------------- ACTIONS ----------------
 
     // 1. Ambil semua tugas (Fetch)
-    const fetchTugas = async () => {
+   const fetchTugas = async () => {
         isLoading.value = true;
         try {
             const response = await api.get('/get-Tugas');
@@ -19,11 +20,11 @@ export const useTugasStore = defineStore("tugas", () => {
                 tugasList.value = response.data.data;
             }
         } catch (error) {
-            console.error("Gagal mengambil daftar tugas:", error);
+            console.error("Gagal mengambil data:", error);
         } finally {
             isLoading.value = false;
         }
-    };
+    }
 
     // 2. Buat tugas baru (Create)
     const createTugas = async (formData) => {

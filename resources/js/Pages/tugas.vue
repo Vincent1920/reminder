@@ -102,7 +102,10 @@ const kategoriStore = useKategoriStore();
 
 const { tugasList, isLoading } = storeToRefs(tugasStore);
 const { kategoriList } = storeToRefs(kategoriStore);
-
+onMounted(async () => {
+    await tugasStore.fetchTugas();
+    console.log("Data Tugas dari Store:", tugasList.value);
+});
 const filterDropdownOpen = ref(false);
 const selectedCategories = ref([]);
 const filterDate = ref({ start: '', end: '' });

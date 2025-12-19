@@ -11,7 +11,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 // Route::middleware('auth:sanctum')->post('/Create_Tugas', [TugasController::class, 'CreateTugas']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/Create_Tugas', [TugasController::class, 'CreateTugas']);
-    Route::get('/get-tugas', [TugasController::class, 'getTugas']);
+    Route::get('/get-Tugas', [TugasController::class, 'getTugas']);
 
     Route::post('/kategori',[KategoriController::class,'store']);
     // Route::post('/Create_Tugas',[TugasController::class,'CreateTugas']);
