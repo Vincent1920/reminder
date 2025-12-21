@@ -6,17 +6,24 @@ import Login from '../Auth/Login.vue'
 import Register from '../Auth/Register.vue'
 import Kategori from '../Pages/Kategori.vue'
 import home from '../Pages/home.vue'
+import profil from '../Pages/profil.vue'
 import tugas from '../Pages/tugas.vue'
 import history from '../Pages/history.vue'
 import CreateTugasPage from '../Public/CreateTugasPage.vue'
 import CreateKategoriPage from '../Public/CreateKategoriPage.vue'
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import Profil from '../Pages/profil.vue'
 
 const routes = [
   { 
     path: '/', 
     name: 'home', // Tambahkan name
     component: home 
+  },
+  { 
+    path: '/profil', 
+    name: 'profil', // Tambahkan name
+    component: Profil 
   },
   { 
     path: '/login', 
@@ -61,6 +68,7 @@ const routes = [
     component: CreateKategoriPage,
     meta: { requiresAuth: true } // <--- KUNCI HALAMAN INI
   },
+  
 ]
 
 const router = createRouter({
