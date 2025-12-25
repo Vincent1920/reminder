@@ -21,10 +21,15 @@ class Tugas extends Model
         'tugas',
         'is_done',
         'its_over',
+        'notified_1_hour',
+        'notified_5_min',
+        'notified_deadline',
     ];
 
     // app/Models/Tugas.php
-
+protected $casts = [
+    'tanggal' => 'datetime',
+];
 
     public function user()
     {

@@ -17,14 +17,14 @@ return new class extends Migration
         $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         $table->unsignedBigInteger('id_kategori');
         $table->foreign('id_kategori')->references('id')->on('kategori')->onDelete('cascade');
-        
-
         $table->dateTime('tanggal'); 
-        
         $table->enum('prioritas', ['ya', 'tidak'])->default('tidak'); 
         $table->string('tugas');
         $table->boolean('is_done')->default(false);
         $table->boolean('its_over')->default(false);
+         $table->boolean('notified_1_hour')->default(false);
+        $table->boolean('notified_5_min')->default(false);
+         $table->boolean('notified_deadline')->default(false);
         $table->timestamps();
     });
 }

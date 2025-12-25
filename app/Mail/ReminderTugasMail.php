@@ -14,48 +14,23 @@ class ReminderTugasMail extends Mailable
     use Queueable, SerializesModels;
 
     public $tugas;
+    public $jenis;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($tugas)
+    public function __construct($tugas, $jenis)
     {
         $this->tugas = $tugas;
-    }
-
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Reminder Tugas Mail',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.reminder_tugas',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+        $this->jenis = $jenis;
     }
 
     public function build()
-{
-    return $this->subject('Peringatan: Tugas Anda Hampir Tiba!')
-                ->view('emails.reminder_tugas');
-}
+    {
+        $subject = match ($this->jenis) {
+            '1_jam' => '⏰ Reminder 1 Jam Lagi',
+            '5_menit' => '⚠️ Reminder 5 Menit Lagi',
+            'deadline' => '❗ Deadline Tugas Sekarang',
+        };
+
+        return $this->subject($subject)
+                    ->view('emails.reminder_tugas');
+    }
 }
