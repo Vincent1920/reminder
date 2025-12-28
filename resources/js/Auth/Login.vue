@@ -45,7 +45,9 @@
                 </form>
 
                 <div class="flex items-center justify-between mt-8">
-                    <button class="text-sm font-semibold text-gray-500 hover:text-black transition-colors">Forgot Password?</button>
+                    <router-link :to="`/lupa_password`" class="block">
+                        <button class="text-sm font-semibold text-gray-500 hover:text-black transition-colors">Forgot Password?</button>
+                    </router-link>
                     <router-link to="/registrasi">
                         <button class="bg-white border-2 border-black text-black px-6 py-2 rounded-xl font-bold text-sm hover:bg-black hover:text-white transition-all">
                             Register

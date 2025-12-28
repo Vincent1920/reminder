@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPasswordMail;
+
 class AuthController extends Controller
 {
 
@@ -63,4 +69,65 @@ public function register(Request $request)
 
         return response()->json(['message' => 'Logged out successfully']);
     }
+
+    // AuthController.php
+public function sendResetLink(Request $request) {
+    $request->validate(['email' => 'required|email']);
+
+    // Cek apakah email terdaftar
+    $user = User::where('email', $request->email)->first();
+    if (!$user) return response()->json(['message' => 'Email tidak ditemukan'], 404);
+
+    // Buat token unik
+    $token = Str::random(60);
+    DB::table('password_reset_tokens')->updateOrInsert(
+        ['email' => $request->email],
+        ['token' => $token, 'created_at' => now()]
+    );
+
+
+    $resetUrl = route('password.reset', ['token' => $token, 'email' => $request->email]);
+    Mail::to($request->email)->send(new ResetPasswordMail($resetUrl));
+
+    return response()->json(['message' => 'Link reset password telah dikirim ke email Anda.']);
+}
+// AuthController.php
+
+// Tambahkan di dalam AuthController.php
+// AuthController.php
+
+public function resetPassword(Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:6|confirmed',
+    ]);
+
+    $check = DB::table('password_reset_tokens')
+                ->where('email', $request->email)
+                ->where('token', $request->token)
+                ->first();
+
+    if (!$check) {
+        // Kembali ke halaman Blade reset dengan pesan error
+        return back()->withErrors(['message' => 'Token tidak valid atau sudah kadaluarsa']);
+    }
+
+    $user = User::where('email', $request->email)->first();
+    if ($user) {
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        /** * PERBAIKAN: 
+         * Karena Login dikelola Vue (port 5173 atau path /login), 
+         * kita arahkan langsung ke URL absolut aplikasi Vue kamu.
+         */
+        return redirect('http://localhost:5173/login?reset=success');
+    }
+
+    return back()->withErrors(['message' => 'User tidak ditemukan.']);
+}
 }

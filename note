@@ -11,3 +11,4 @@ Cari tulisan allowPublicKeyRetrieval.
 Ubah false menjadi true.
 
 php artisan app:send-task-reminders
+php artisan schedule:work

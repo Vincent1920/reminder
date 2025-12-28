@@ -18,13 +18,20 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ title }}</h2>
                 <p class="text-gray-500 mb-8 px-2">{{ message }}</p>
 
-                <button @click="$emit('confirm')" 
-                    :class="[
-                        'w-full text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-200 active:scale-95',
-                        type === 'success' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'
-                    ]">
-                    OK
-                </button>
+                <div class="flex gap-3">
+                    <button v-if="showCancel" @click="$emit('cancel')" 
+                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-4 rounded-full transition duration-200 active:scale-95">
+                        Batal
+                    </button>
+                    
+                    <button @click="$emit('confirm')" 
+                        :class="[
+                            'flex-1 text-white font-bold py-3 px-4 rounded-full shadow-lg transition duration-200 active:scale-95',
+                            type === 'success' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-red-500 hover:bg-red-600'
+                        ]">
+                        OK
+                    </button>
+                </div>
             </div>
         </div>
     </Transition>
@@ -35,12 +42,8 @@ defineProps({
     show: Boolean,
     title: String,
     message: String,
-    type: { type: String, default: 'success' }
+    type: { type: String, default: 'success' },
+    showCancel: { type: Boolean, default: false } // Properti baru
 });
-defineEmits(['confirm']);
+defineEmits(['confirm', 'cancel']); // Emit baru
 </script>
-
-<style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-</style>

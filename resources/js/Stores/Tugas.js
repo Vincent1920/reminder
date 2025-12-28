@@ -68,6 +68,65 @@ export const useTugasStore = defineStore("tugas", () => {
     }
 };
 
+// 4 show tugas 
+const showTugas = async (id) => {
+    isLoading.value = true;
+    try {
+        const response = await api.get(`/get-Tugas/${id}`);
+        if (response.data.success) {
+            return response.data.data; // Pastikan mengembalikan data objek tugas
+        }
+    } catch (error) {
+        console.error("Gagal mengambil detail tugas:", error);
+        return null; 
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+    // 5. Update data tugas (Edit)
+    const updateTugas = async (id, formData) => {
+        isLoading.value = true;
+        errors.value = {}; 
+
+        try {
+            // Gunakan PUT atau PATCH sesuai route di Laravel
+            const response = await api.put(`/Update_Tugas/${id}`, formData);
+            
+            if (response.data.success) {
+                await fetchTugas(); // Refresh list agar data di halaman utama update
+                return { success: true, message: response.data.message };
+            }
+        } catch (error) {
+            if (error.response?.status === 422) {
+                errors.value = error.response.data.errors;
+            }
+            return { 
+                success: false, 
+                message: error.response?.data?.message || "Gagal memperbarui tugas" 
+            };
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    // 6. Hapus tugas (Delete)
+const deleteTugas = async (id) => {
+    isLoading.value = true;
+    try {
+        const response = await api.delete(`/Delete_Tugas/${id}`);
+        if (response.data.success) {
+            // Update list lokal agar tidak perlu fetch ulang
+            tugasList.value = tugasList.value.filter(t => t.id !== id);
+            return { success: true, message: response.data.message };
+        }
+    } catch (error) {
+        console.error("Gagal menghapus tugas:", error);
+        return { success: false, message: "Gagal menghapus" };
+    } finally {
+        isLoading.value = false;
+    }
+};
     return {
         // State
         tugasList,
@@ -76,6 +135,9 @@ export const useTugasStore = defineStore("tugas", () => {
         // Actions
         fetchTugas,
         createTugas,
-        updateStatus
+        updateStatus,
+        deleteTugas,
+        showTugas,  
+        updateTugas
     };
 });

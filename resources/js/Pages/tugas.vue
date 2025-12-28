@@ -52,27 +52,51 @@
         <div v-if="isLoading" class="text-center font-poppins text-gray-500">Memuat tugas...</div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div v-for="(task, index) in filteredTasks" :key="task.id" :class="[
-            getColor(index).bg,
-            'relative w-full h-64 rounded-[40px] shadow-lg overflow-hidden transform transition-all hover:scale-105 duration-300'
-        ]">
+            <div v-for="(task, index) in filteredTasks" :key="task.id" class="relative">
 
-                <div class="absolute top-0 left-0 z-10">
-                    <div class="backdrop-blur-sm px-5 py-3 rounded-br-[35px] flex items-center gap-3 shadow-sm transition-colors duration-300"
-                        :style="{ backgroundColor: task.prioritas === 'ya' ? '#FFD83A' : 'rgba(255, 255, 255, 0.9)' }">
-                        
-                        <CalendarDaysIcon class="w-5 h-5" 
-                            :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-600'" />
-                        
-                        <span class="font-bold font-sans text-xs" 
-                            :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-700'">
-                            {{ formatDateTime(task.tanggal) }}
-                        </span>
+                <router-link :to="`/Show_Tugas/${task.id}`" class="block">
+                    <div
+                        :class="[getColor(index).bg,'relative w-full h-64 rounded-[40px] shadow-lg overflow-hidden transform transition-all hover:scale-105 duration-300']">
+                        <div class="absolute top-0 left-0 z-10">
+                            <div class="backdrop-blur-sm px-5 py-3 rounded-br-[35px] flex items-center gap-3 shadow-sm transition-colors duration-300"
+                                :style="{ backgroundColor: task.prioritas === 'ya' ? '#FFD83A' : 'rgba(255, 255, 255, 0.9)' }">
+
+                                <CalendarDaysIcon class="w-5 h-5"
+                                    :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-600'" />
+
+                                <div class="flex flex-col">
+                                    <span class="font-bold font-sans text-xs"
+                                        :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-700'">
+                                        {{ formatDateTime(task.tanggal) }}
+                                    </span>
+                                    <span v-if="task.prioritas === 'ya'"
+                                        class="text-[10px] font-bold text-orange-700 flex items-center gap-1">
+                                        ⭐ <span class="uppercase tracking-tighter">Prioritas</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-center justify-center h-full w-full p-8 transition-all duration-500"
+                            :class="{ 'opacity-30 grayscale blur-[1px]': task.is_done }">
+                            <h2
+                                :class="[getColor(index).text, 'font-kaushan text-4xl text-center leading-tight mb-2', { 'line-through': task.is_done }]">
+                                {{ task.tugas }}
+                            </h2>
+                            <span :class="[getColor(index).accent, 'font-dancing text-2xl opacity-80']">
+                                {{ task.kategori?.nama_kategori || 'Tanpa Kategori' }}
+                            </span>
+                        </div>
+
+                        <div v-if="task.is_done"
+                            class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="w-4/5 h-1 bg-gray-800 rotate-[-5deg] rounded-full shadow-sm opacity-50"></div>
+                        </div>
                     </div>
-                </div>
+                </router-link>
 
                 <div class="absolute top-5 right-8 z-20">
-                    <div class="cursor-pointer transition-transform active:scale-90" @click="toggleCheck(task)">
+                    <div class="cursor-pointer transition-transform active:scale-90" @click.stop="toggleCheck(task)">
                         <CheckIcon v-if="task.is_done" class="w-12 h-12 text-blue-600 drop-shadow-md" />
                         <XMarkIcon v-else-if="task.its_over" class="w-12 h-12 text-red-600 drop-shadow-md" />
                         <div v-else
@@ -81,23 +105,6 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col items-center justify-center h-full w-full p-8 transition-all duration-500"
-                    :class="{ 'opacity-30 grayscale blur-[1px]': task.is_done }">
-                    <h2 :class="[
-                    getColor(index).text, 
-                    'font-kaushan text-4xl text-center leading-tight mb-2', 
-                    { 'line-through': task.is_done }
-                ]">
-                        {{ task.tugas }}
-                    </h2>
-                    <span :class="[getColor(index).accent, 'font-dancing text-2xl opacity-80']">
-                        {{ task.kategori?.nama_kategori || 'Tanpa Kategori' }}
-                    </span>
-                </div>
-
-                <div v-if="task.is_done" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="w-4/5 h-1 bg-gray-800 rotate-[-5deg] rounded-full shadow-sm opacity-50"></div>
-                </div>
             </div>
         </div>
 

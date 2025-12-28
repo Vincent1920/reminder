@@ -18,6 +18,18 @@ Route::get('/cek-session', function () {
     return session()->all();
 });
 
+// routes/web.php
+
+// Menampilkan form reset password (Blade)
+Route::get('/reset-password-form', function (Illuminate\Http\Request $request) {
+    return view('auth.reset-password', [
+        'token' => $request->token,
+        'email' => $request->email
+    ]);
+})->name('password.reset');
+
+// Memproses perubahan password
+Route::post('/reset-password-post', [App\Http\Controllers\AuthController::class, 'resetPassword'])->name('password.update');
 // Route::get('user/email', [UserController::class, 'index']);
 
 // Route::get('/test-email', function () {

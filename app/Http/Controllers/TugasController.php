@@ -101,4 +101,114 @@ class TugasController extends Controller
 
         
     }
+    /**
+     * Ambil detail satu tugas berdasarkan ID (Show)
+     */
+    public function show(Request $request, $id)
+    {
+        try {
+            // Mengambil tugas milik user yang sedang login dengan relasi kategori
+            $tugas = Tugas::with('kategori')
+                ->where('id_user', $request->user()->id)
+                ->find($id);
+
+            if (!$tugas) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tugas tidak ditemukan atau Anda tidak memiliki akses.'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $tugas
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil detail tugas.',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Memperbarui data tugas (Edit/Update)
+     */
+    public function update(Request $request, $id)
+    {
+        // 1. Cari data tugas
+        $tugas = Tugas::where('id_user', $request->user()->id)->find($id);
+
+        if (!$tugas) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        }
+
+        // 2. Validasi Input
+        $validator = Validator::make($request->all(), [
+            'id_kategori' => 'required|exists:kategori,id',
+            'tanggal'     => 'required|date',
+            'prioritas'   => 'required|in:ya,tidak',
+            'tugas'       => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            // 3. Update data
+            $tugas->update([
+                'id_kategori' => $request->id_kategori,
+                'tanggal'     => $request->tanggal,
+                'prioritas'   => $request->prioritas,
+                'tugas'       => $request->tugas,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas berhasil diperbarui',
+                'data'    => $tugas
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui tugas',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Menghapus tugas (Delete)
+     */
+    public function destroy(Request $request, $id)
+    {
+        try {
+            $tugas = Tugas::where('id_user', $request->user()->id)->find($id);
+
+            if (!$tugas) {
+                return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+            }
+
+            $tugas->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas berhasil dihapus'
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus tugas',
+                'error_detail' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
