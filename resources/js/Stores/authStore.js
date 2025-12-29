@@ -130,6 +130,34 @@ const login = async (credentials) => {
         }
     };
 
+//  updateProfile
+
+const updateProfile = async (formData) => {
+    isLoading.value = true;
+    errors.value = {};
+    try {
+        const response = await api.put("/update-profile", formData);
+        
+        // Update state user
+        user.value = response.data.user;
+        
+        // Sinkronkan localStorage agar Navbar/Profil tidak perlu reload
+        localStorage.setItem("name", response.data.user.name);
+        localStorage.setItem("email", response.data.user.email);
+        
+        return { success: true, message: "Profil berhasil diperbarui!" };
+    } catch (error) {
+        if (error.response?.status === 422) {
+            errors.value = error.response.data.errors;
+        }
+        return { success: false, message: error.response?.data?.message || "Gagal memperbarui profil." };
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+
+
     return {
         // STATE
         user,
@@ -140,6 +168,7 @@ const login = async (credentials) => {
         isAuthenticated,
 
         // ACTIONS
+        updateProfile,
         forgotPassword,
         register,
         login,

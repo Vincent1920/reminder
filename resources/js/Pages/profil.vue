@@ -1,5 +1,5 @@
 <template>
-  <Navbar/>
+  <Navbar />
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
     <div class="bg-cyan-400 w-80 rounded-lg p-8 flex flex-col items-center shadow-lg">
       
@@ -14,11 +14,12 @@
       <div class="w-full space-y-4 mb-10">
         <div>
           <input 
-            v-model="form.nama"
+            v-model="form.name"
             type="text" 
             placeholder="Nama" 
-            class="w-full px-3 py-2 text-gray-800 bg-white border-none focus:outline-none focus:ring-2 focus:ring-cyan-600 placeholder-gray-800"
+            class="w-full px-3 py-2 text-gray-800 bg-white border-none focus:outline-none focus:ring-2 focus:ring-cyan-600 placeholder-gray-800 rounded"
           />
+          <p v-if="authStore.errors.name" class="text-xs text-red-600 mt-1">{{ authStore.errors.name[0] }}</p>
         </div>
 
         <div>
@@ -26,47 +27,78 @@
             v-model="form.email"
             type="email" 
             placeholder="Email" 
-            class="w-full px-3 py-2 text-gray-800 bg-white border-none focus:outline-none focus:ring-2 focus:ring-cyan-600 placeholder-gray-800"
+            class="w-full px-3 py-2 text-gray-800 bg-white border-none focus:outline-none focus:ring-2 focus:ring-cyan-600 placeholder-gray-800 rounded"
           />
+          <p v-if="authStore.errors.email" class="text-xs text-red-600 mt-1">{{ authStore.errors.email[0] }}</p>
         </div>
       </div>
 
       <div class="w-full flex flex-col items-center gap-2">
         <button 
           @click="handleSave"
-          class="w-32 bg-pink-100 hover:bg-pink-200 text-gray-800 text-sm font-medium py-1 px-4 shadow-sm transition-colors"
+          :disabled="authStore.isLoading"
+          class="w-32 bg-pink-100 hover:bg-pink-200 text-gray-800 text-sm font-medium py-1 px-4 shadow-sm transition-colors rounded"
         >
-          Simpan Profil
+          {{ authStore.isLoading ? 'Memproses...' : 'Simpan Profil' }}
         </button>
         
         <button 
           @click="handleCancel"
-          class="w-32 bg-pink-100 hover:bg-pink-200 text-gray-800 text-sm font-medium py-1 px-4 shadow-sm transition-colors"
+          class="w-32 bg-pink-100 hover:bg-pink-200 text-gray-800 text-sm font-medium py-1 px-4 shadow-sm transition-colors rounded"
         >
           Cancel
         </button>
       </div>
-
     </div>
+
+    <AlertModal 
+      :show="alert.show"
+      :type="alert.type"
+      :title="alert.title"
+      :message="alert.message"
+      @confirm="alert.show = false"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { useAuthStore } from '@/Stores/authStore'
 import Navbar from '../Components/Navbar.vue';
+import AlertModal from '../Components/AlertModal.vue';
 
-// State untuk data form (opsional, agar fungsional)
+const authStore = useAuthStore()
+
 const form = ref({
-  nama: '',
+  name: '',
   email: ''
 })
 
-const handleSave = () => {
-  alert(`Menyimpan: ${form.value.nama}`)
+const alert = reactive({
+  show: false,
+  type: 'success',
+  title: '',
+  message: ''
+})
+
+// Muat data saat halaman dibuka
+onMounted(() => {
+  form.value.name = localStorage.getItem("name") || ''
+  form.value.email = localStorage.getItem("email") || ''
+})
+
+const handleSave = async () => {
+  const result = await authStore.updateProfile(form.value)
+  
+  alert.type = result.success ? 'success' : 'error'
+  alert.title = result.success ? 'Berhasil!' : 'Gagal!'
+  alert.message = result.message
+  alert.show = true
 }
 
 const handleCancel = () => {
-  form.value.nama = ''
-  form.value.email = ''
+  // Reset ke data awal (yang ada di localStorage)
+  form.value.name = localStorage.getItem("name") || ''
+  form.value.email = localStorage.getItem("email") || ''
 }
 </script>
