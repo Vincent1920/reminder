@@ -1,3 +1,7 @@
+composer install 
+ cp .env.example .env
+npm install
+
 Untuk Menyalakan
     docker-compose up -d
 

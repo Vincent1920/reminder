@@ -85,8 +85,8 @@ public function sendResetLink(Request $request) {
         ['token' => $token, 'created_at' => now()]
     );
 
-
-    $resetUrl = route('password.reset', ['token' => $token, 'email' => $request->email]);
+$resetUrl = "http://localhost:8000/reset-password?token=" . $token . "&email=" . $request->email;
+    // $resetUrl = route('password.reset', ['token' => $token, 'email' => $request->email]);
     Mail::to($request->email)->send(new ResetPasswordMail($resetUrl));
 
     return response()->json(['message' => 'Link reset password telah dikirim ke email Anda.']);
