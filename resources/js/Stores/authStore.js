@@ -96,6 +96,40 @@ const login = async (credentials) => {
         setAxiosHeader();
     };
 
+
+    // ---------------- FORGOT PASSWORD ----------------
+    const forgotPassword = async (email) => {
+        isLoading.value = true;
+        errors.value = {};
+        successMessage.value = "";
+
+        try {
+            // Menggunakan instance 'api' yang sudah kamu import di atas
+            const response = await api.post("/forgot-password", { email });
+
+            successMessage.value = response.data.message;
+            return { success: true, message: response.data.message };
+
+        } catch (error) {
+            let msg = "Terjadi kesalahan.";
+            
+            if (error.response?.status === 404) {
+                msg = "Email tidak ditemukan.";
+                errors.value = { general: [msg] };
+            } else if (error.response?.status === 422) {
+                errors.value = error.response.data.errors;
+                msg = "Data tidak valid.";
+            } else {
+                errors.value = { general: ["Server error."] };
+            }
+
+            return { success: false, message: msg };
+
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
     return {
         // STATE
         user,
@@ -106,6 +140,7 @@ const login = async (credentials) => {
         isAuthenticated,
 
         // ACTIONS
+        forgotPassword,
         register,
         login,
         logout,

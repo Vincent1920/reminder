@@ -1,4 +1,5 @@
 <template>
+  <Navbar />
   <div class="container mx-auto px-4 py-12 flex flex-col items-center">
     <h1 class="font-kaushan text-4xl mb-8">Lupa Password</h1>
     <div class="w-full max-w-md bg-white p-8 rounded-3xl shadow-lg border">
@@ -24,29 +25,29 @@
 </template>
 
 <script setup>
+import Navbar from "@/Components/Navbar.vue"; 
 import { ref, reactive } from 'vue';
-import axios from 'axios';
+import { useAuthStore } from "@/Stores/authStore"; // Import store
 import AlertModal from "@/Components/AlertModal.vue";
 
+const authStore = useAuthStore(); // Inisialisasi store
 const email = ref('');
-const loading = ref(false);
 const alert = reactive({ show: false, type: 'success', title: '', message: '' });
 
 const handleForgotPassword = async () => {
-  loading.value = true;
-  try {
-    const response = await axios.post('http://localhost:8000/api/forgot-password', { email: email.value });
+  // Gunakan action dari authStore
+  const result = await authStore.forgotPassword(email.value);
+  
+  if (result.success) {
     alert.type = 'success';
     alert.title = 'Berhasil!';
-    alert.message = response.data.message;
-    alert.show = true;
-  } catch (error) {
+    alert.message = result.message;
+  } else {
     alert.type = 'error';
     alert.title = 'Gagal!';
-    alert.message = error.response?.data?.message || 'Terjadi kesalahan.';
-    alert.show = true;
-  } finally {
-    loading.value = false;
+    alert.message = result.message;
   }
+  
+  alert.show = true;
 };
 </script>
