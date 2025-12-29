@@ -76,9 +76,81 @@
                             </div>
                         </TransitionGroup>
 
+
                         <div v-if="!isLoading && filteredTasks.length === 0"
                             class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-[40px] py-16 text-center">
-                            <p class="font-kaushan text-3xl text-gray-400">Semua tugas selesai!</p>
+                            <div class="space-y-8">
+                                <TransitionGroup v-if="filteredTasks.length > 0" name="list" tag="div"
+                                    class="flex flex-col gap-8">
+                                    <div v-for="(task, index) in filteredTasks" :key="task.id" :class="[
+            getColor(index).bg,
+            'relative w-full h-52 rounded-[45px] shadow-xl overflow-hidden transform transition-all hover:scale-[1.02] duration-300'
+        ]">
+                                        <div class="absolute top-0 left-0 w-full flex items-start z-10">
+                                            <div class="backdrop-blur-sm px-6 py-3 rounded-br-[35px] flex items-center gap-3 shadow-sm min-w-[140px]"
+                                                :style="{ backgroundColor: task.prioritas === 'ya' ? '#FFD83A' : 'rgba(255, 255, 255, 0.9)' }">
+                                                <CalendarDaysIcon class="w-5 h-5"
+                                                    :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-600'" />
+                                                <span class="font-bold text-xs"
+                                                    :class="task.prioritas === 'ya' ? 'text-black' : 'text-gray-700'">
+                                                    {{ formatDateTime(task.tanggal) }}
+                                                </span>
+                                            </div>
+                                            <div class="px-6 py-3 flex-grow text-left">
+                                                <span class="font-dancing text-2xl text-gray-700 opacity-90">
+                                                    {{ task.kategori?.nama_kategori || 'Kategori' }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="absolute top-5 right-8 z-20">
+                                            <div class="cursor-pointer transition-transform active:scale-90"
+                                                @click="toggleCheck(task)">
+                                                <div v-if="!task.is_done"
+                                                    class="w-9 h-9 bg-white border-2 border-gray-800 rounded-2xl flex items-center justify-center">
+                                                    <XMarkIcon v-if="task.its_over" class="w-7 h-7 text-red-600" />
+                                                </div>
+                                                <CheckIcon v-else class="w-12 h-12 text-blue-600" />
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-col items-center justify-center h-full w-full p-8 pt-12">
+                                            <h2
+                                                :class="[getColor(index).text, 'font-kaushan text-5xl text-center leading-tight']">
+                                                {{ task.tugas }}
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </TransitionGroup>
+
+                                <div v-else-if="!isLoading && filteredTasks.length === 0"
+                                    class=" rounded-[40px] py-16 px-8 text-center flex flex-col items-center gap-6 grouptransition-colors duration-300">
+
+                                    <div class="relative">
+                                        <CalendarDaysIcon
+                                            class="w-20 h-20 text-blue-200 group-hover:text-blue-300 transition-colors shadow-sm" />
+                                        <div
+                                            class="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-ping">
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <p
+                                            class="font-kaushan text-4xl text-gray-400 group-hover:text-blue-500 transition-colors">
+                                            Belum ada tugas nih...
+                                        </p>
+                                        <p class="font-poppins text-gray-500 text-sm italic">
+                                            "Jangan biarkan hari ini berlalu tanpa rencana!"
+                                        </p>
+                                    </div>
+
+                                    <router-link to="/Create_Tugas"
+                                        class="mt-4 px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg transform transition-all hover:scale-110 active:scale-95 flex items-center gap-2">
+                                        <span class="text-xl">✨</span> Ayo buat tugas sekarang!
+                                    </router-link>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
