@@ -1,12 +1,11 @@
 services:
   nginx:
     image: nginx:alpine
-    # container_name: nginx
     ports:
-      - "8080:80"     
+      - "8080:80"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./app:/var/www/html:ro
+      - ./:/var/www/html:ro
     depends_on:
       - php
     networks:
@@ -16,7 +15,15 @@ services:
     image: php:8.2-fpm-alpine
     container_name: php-fpm-new
     volumes:
-      - ./app:/var/www/html
+      - ./:/var/www/html
+    networks:
+      - backend
+
+  composer:
+    image: composer:2
+    working_dir: /var/www/html
+    volumes:
+      - ./:/app
     networks:
       - backend
 
@@ -29,7 +36,7 @@ services:
       MYSQL_USER: rememberME
       MYSQL_PASSWORD: PwRememberME
     ports:
-      - "3306:3306"    
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     networks:

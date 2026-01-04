@@ -3,10 +3,10 @@ composer install
 npm install
 
 Untuk Menyalakan
-    docker-compose up -d
+    docker compose up -d
 
 Untuk Mematikan 
-    docker-compose down
+    docker compose down
 
 Untuk Cek Status 
     docker-compose ps
