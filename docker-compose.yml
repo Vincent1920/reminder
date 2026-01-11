@@ -26,7 +26,7 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: reminder-db
+    container_name: p-db
     environment:
       MYSQL_DATABASE: reminder
       MYSQL_ROOT_PASSWORD: root
