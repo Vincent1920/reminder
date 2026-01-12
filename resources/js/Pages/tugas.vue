@@ -130,10 +130,10 @@
     import Navbar from '../Components/Navbar.vue';
     import {
         useTugasStore
-    } from '@/stores/Tugas';
+    } from '@/Stores/Tugas';
     import {
         useKategoriStore
-    } from '@/stores/Kategori';
+    } from '@/Stores/Kategori';
     import {
         storeToRefs
     } from 'pinia';
