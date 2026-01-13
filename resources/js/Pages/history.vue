@@ -50,7 +50,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useTugasStore } from '@/stores/Tugas';
+import { useTugasStore } from '@/Stores/Tugas';
 import { CalendarDaysIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 import Navbar from '../Components/Navbar.vue';
 

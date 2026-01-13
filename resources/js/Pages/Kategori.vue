@@ -55,7 +55,7 @@
     import Navbar from '../Components/Navbar.vue';
     import {
         useKategoriStore
-    } from '@/stores/Kategori';
+    } from '@/Stores/Kategori';
     import {
         storeToRefs
     } from 'pinia';
